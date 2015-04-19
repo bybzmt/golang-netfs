@@ -9,46 +9,51 @@ import (
 const VERSION uint32 = 1
 
 const (
-	_ uint8 = iota
-	TYTE_INIT
+	TYTE_INIT uint8 = iota + 1
 	TYPE_REQUEST
 	TYPE_RESPONSE
 )
 
 const (
 	//连接管理
-	LINK_INIT uint8 = 1
-	LINK_CLOSE uint8 = 2
-	LINK_ERROR uint8 = 3
+	LINK_CLOSE uint8 = iota + 1
 
+	//这两个未实现
+	LINK_ERROR
+	LINK_PING
+)
+
+const (
 	//文件系统操作码
-	FS_CHMOD uint8 = 20
-	FS_CHTIMES uint8 = 21
-	FS_MKDIR uint8 = 22
-	FS_MKDIRALL uint8 = 23
-	FS_REMOVE uint8 = 24
-	FS_REMOVEALL uint8 = 25
-	FS_RENAME uint8 = 26
-	FS_TRUNCATE uint8 = 27
-	FS_CREATE uint8 = 28
-	FS_OPEN uint8 = 29
-	FS_OPENFILE uint8 = 30
-	FS_LSTAT uint8 = 31
-	FS_STAT uint8 = 32
+	FS_CHMOD uint8 = iota + 20
+	FS_CHTIMES
+	FS_MKDIR
+	FS_MKDIRALL
+	FS_REMOVE
+	FS_REMOVEALL
+	FS_RENAME
+	FS_TRUNCATE
+	FS_CREATE
+	FS_OPEN
+	FS_OPENFILE
+	FS_LSTAT
+	FS_STAT
+)
 
+const (
 	//文件对象操作码
-	FILE_CHMOD uint8 = 60
-	FILE_CLOSE uint8 = 61
-	FILE_READ uint8 = 62
-	FILE_READAT uint8 = 63
-	FILE_READDIR uint8 = 64
-	FILE_READDIRNAMES uint8 = 65
-	FILE_SEEK uint8 = 66
-	FILE_STAT uint8 = 67
-	FILE_SYNC uint8 = 68
-	FILE_TRUNCATE uint8 = 69
-	FILE_WRITE uint8 = 70
-	FILE_WRITEAT uint8 = 71
+	FILE_CHMOD uint8 = iota + 60
+	FILE_CLOSE
+	FILE_READ
+	FILE_READAT
+	FILE_READDIR
+	FILE_READDIRNAMES
+	FILE_SEEK
+	FILE_STAT
+	FILE_SYNC
+	FILE_TRUNCATE
+	FILE_WRITE
+	FILE_WRITEAT
 )
 
 const (

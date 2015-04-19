@@ -78,9 +78,6 @@ func (c *Server) Run() {
 		switch code {
 		case LINK_CLOSE :
 			return
-		case LINK_ERROR :
-			getLog().Debug("link: link Error")
-			return
 		}
 
 		c.setDeadline(ActionTimeout)
