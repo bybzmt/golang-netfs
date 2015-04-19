@@ -67,6 +67,7 @@ func (c *conn) Close() {
 // ----- 请求/响应 -----
 
 func (c *conn) doRequest(code uint8) {
+	c.setDeadline(ActionTimeout)
 	c.writeUint8(TYPE_REQUEST)
 	c.writeUint8(code)
 }
@@ -93,8 +94,6 @@ func (c *conn) doResponse(code uint8) {
 }
 
 func (c *conn) waitRequest() uint8 {
-	c.flush()
-
 	_type := c.readUint8()
 	if _type != TYPE_REQUEST {
 		panic(Data_Error(fmt.Sprintf("Expect Request(%d) Get:%d", TYPE_REQUEST, _type)))

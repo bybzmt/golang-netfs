@@ -5,7 +5,9 @@ import (
 	"time"
 )
 
-func (c *Client) fs_chmod(name string, mode os.FileMode) error {
+func (c *Client) Chmod(name string, mode os.FileMode) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_CHMOD)
 	c.writeString(name)
 	c.writeUint32(uint32(mode))
@@ -26,7 +28,9 @@ func (c *Server) fs_chmod() {
 
 //----------------------
 
-func (c *Client) fs_chtimes(name string, atime time.Time, mtime time.Time) error {
+func (c *Client) Chtimes(name string, atime time.Time, mtime time.Time) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_CHTIMES)
 	c.writeString(name)
 	c.writeInt64(atime.Unix())
@@ -49,7 +53,9 @@ func (c *Server) fs_chtimes() {
 
 //------------------
 
-func (c *Client) fs_mkdir(name string, perm os.FileMode) error {
+func (c *Client) Mkdir(name string, perm os.FileMode) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_MKDIR)
 	c.writeString(name)
 	c.writeUint32(uint32(perm))
@@ -70,7 +76,9 @@ func (c *Server) fs_mkdir() {
 
 //---------------
 
-func (c *Client) fs_mkdirAll(path string, perm os.FileMode) error {
+func (c *Client) MkdirAll(path string, perm os.FileMode) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_MKDIRALL)
 	c.writeString(path)
 	c.writeUint32(uint32(perm))
@@ -91,7 +99,9 @@ func (c *Server) fs_mkdirAll() {
 
 //----------------
 
-func (c *Client) fs_remove(name string) error {
+func (c *Client) Remove(name string) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_REMOVE)
 	c.writeString(name)
 
@@ -110,7 +120,9 @@ func (c *Server) fs_remove() {
 
 //-------------
 
-func (c *Client) fs_removeAll(path string) error {
+func (c *Client) RemoveAll(path string) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_REMOVEALL)
 	c.writeString(path)
 
@@ -129,7 +141,9 @@ func (c *Server) fs_removeAll() {
 
 //-------------
 
-func (c *Client) fs_rename(oldpath, newpath string) error {
+func (c *Client) Rename(oldpath, newpath string) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_RENAME)
 	c.writeString(oldpath)
 	c.writeString(newpath)
@@ -150,7 +164,9 @@ func (c *Server) fs_rename() {
 
 //-------------
 
-func (c *Client) fs_truncate(name string, size int64) error {
+func (c *Client) Truncate(name string, size int64) (err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_TRUNCATE)
 	c.writeString(name)
 	c.writeInt64(size)
@@ -171,22 +187,10 @@ func (c *Server) fs_truncate() {
 
 //----------------
 
-func _client_init_file(c *Client, fid uint32, name string, err error) (File, error) {
-	if err != nil {
-		return nil, err
-	}
 
-	f := new(netFile)
-	f.Client = c
-	f.fid = fid
-	f.name = name
+func (c *Client) Create(name string) (file File, err error) {
+	defer onPanic(&err)
 
-	return f, nil
-}
-
-//-----------------
-
-func (c *Client) fs_create(name string) (file File, err error) {
 	c.doRequest(FS_CREATE)
 	c.writeString(name)
 
@@ -209,7 +213,9 @@ func (c *Server) fs_create() {
 }
 //-----------------
 
-func (c *Client) fs_open(name string) (file File, err error) {
+func (c *Client) Open(name string) (file File, err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_OPEN)
 	c.writeString(name)
 
@@ -233,7 +239,9 @@ func (c *Server) fs_open() {
 
 //-----------------
 
-func (c *Client) fs_openFile(name string, flag int, perm os.FileMode) (file File, err error) {
+func (c *Client) OpenFile(name string, flag int, perm os.FileMode) (file File, err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_OPENFILE)
 	c.writeString(name)
 	c.writeInt32(int32(flag))
@@ -261,7 +269,9 @@ func (c *Server) fs_openFile() {
 
 //------
 
-func (c *Client) fs_lstat(name string) (fi os.FileInfo, err error) {
+func (c *Client) Lstat(name string) (fi os.FileInfo, err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_LSTAT)
 	c.writeString(name)
 
@@ -283,7 +293,9 @@ func (c *Server) fs_lstat() {
 
 //------
 
-func (c *Client) fs_stat(name string) (fi os.FileInfo, err error) {
+func (c *Client) Stat(name string) (fi os.FileInfo, err error) {
+	defer onPanic(&err)
+
 	c.doRequest(FS_STAT)
 	c.writeString(name)
 
@@ -302,4 +314,20 @@ func (c *Server) fs_stat() {
 	c.writeFileInfo(fi)
 	c.writeError(err)
 }
+
+// ----------------
+
+func _client_init_file(c *Client, fid uint32, name string, err error) (File, error) {
+	if err != nil {
+		return nil, err
+	}
+
+	f := new(netFile)
+	f.Client = c
+	f.fid = fid
+	f.name = name
+
+	return f, nil
+}
+
 

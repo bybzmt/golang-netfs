@@ -5,7 +5,9 @@ import (
 )
 
 
-func (f *netFile) f_chmod(mode os.FileMode) error {
+func (f *netFile) Chmod(mode os.FileMode) (err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_CHMOD)
 	f.writeUint32(f.fid)
 	f.writeUint32(uint32(mode))
@@ -26,7 +28,9 @@ func (f *Server) f_chmod() {
 
 //---------
 
-func (f *netFile) f_close() error {
+func (f *netFile) Close() (err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_CLOSE)
 	f.writeUint32(f.fid)
 
@@ -45,7 +49,9 @@ func (f *Server) f_close() {
 
 //-----------
 
-func (f *netFile) f_read(b []byte) (n int, err error) {
+func (f *netFile) Read(b []byte) (n int, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_READ)
 	f.writeUint32(f.fid)
 	f.writeUint32(uint32(len(b)))
@@ -70,7 +76,9 @@ func (f *Server) f_read() {
 
 //----------------
 
-func (f *netFile) f_readAt(b []byte, off int64) (n int, err error) {
+func (f *netFile) ReadAt(b []byte, off int64) (n int, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_READAT)
 	f.writeUint32(f.fid)
 	f.writeUint32(uint32(len(b)))
@@ -97,7 +105,9 @@ func (f *Server) f_readAt() {
 
 //------------------
 
-func (f *netFile) f_readdir(n int) (fi []os.FileInfo, err error) {
+func (f *netFile) Readdir(n int) (fi []os.FileInfo, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_READDIR)
 	f.writeUint32(f.fid)
 	f.writeInt32(int32(n))
@@ -129,7 +139,9 @@ func (f *Server) f_readdir() {
 
 //----------------
 
-func (f *netFile) f_readdirnames(n int) (names []string, err error) {
+func (f *netFile) Readdirnames(n int) (names []string, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_READDIRNAMES)
 	f.writeUint32(f.fid)
 	f.writeInt32(int32(n))
@@ -161,7 +173,9 @@ func (f *Server) f_readdirnames() {
 
 //------------------
 
-func (f *netFile) f_seek(offset int64, whence int) (ret int64, err error) {
+func (f *netFile) Seek(offset int64, whence int) (ret int64, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_SEEK)
 	f.writeUint32(f.fid)
 	f.writeInt64(offset)
@@ -187,7 +201,9 @@ func (f *Server) f_seek() {
 
 //----------------
 
-func (f *netFile) f_stat() (fi os.FileInfo, err error) {
+func (f *netFile) Stat() (fi os.FileInfo, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_STAT)
 	f.writeUint32(f.fid)
 
@@ -209,7 +225,9 @@ func (f *Server) f_stat() {
 
 //---------------
 
-func (f *netFile) f_sync() (err error) {
+func (f *netFile) Sync() (err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_SYNC)
 	f.writeUint32(f.fid)
 
@@ -228,7 +246,9 @@ func (f *Server) f_sync() {
 
 //----------------
 
-func (f *netFile) f_truncate(size int64) error {
+func (f *netFile) Truncate(size int64) (err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_TRUNCATE)
 	f.writeUint32(f.fid)
 	f.writeInt64(size)
@@ -249,7 +269,9 @@ func (f *Server) f_truncate() {
 
 //-----------------
 
-func (f *netFile) f_write(b []byte) (n int, err error) {
+func (f *netFile) Write(b []byte) (n int, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_WRITE)
 	f.writeUint32(f.fid)
 	f.writeByte(b)
@@ -273,7 +295,9 @@ func (f *Server) f_write() {
 
 //----------------
 
-func (f *netFile) f_writeAt(b []byte, off int64) (n int, err error) {
+func (f *netFile) WriteAt(b []byte, off int64) (n int, err error) {
+	defer onPanic(&err)
+
 	f.doRequest(FILE_WRITEAT)
 	f.writeUint32(f.fid)
 	f.writeByte(b)
