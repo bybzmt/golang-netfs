@@ -23,6 +23,26 @@ func (c *conn) init(conn net.Conn, rBuf, wBuf int) {
 	c.buf = bufio.NewReadWriter(r, w)
 }
 
+func (c *conn) LinkInit() (err error) {
+	defer onPanic(&err)
+
+	c.writeUint8(TYTE_INIT)
+	c.writeUint32(VERSION)
+	c.flush()
+
+	t := c.readUint8()
+	if t != TYTE_INIT {
+		return errors.New("Protocol Unexpect.")
+	}
+
+	ver := c.readUint32()
+	if ver != VERSION {
+		return errors.New("Protocol Version Unexpect.")
+	}
+
+	return nil
+}
+
 func (c *conn) flush() {
 	err := c.buf.Flush()
 	if err != nil {

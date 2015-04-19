@@ -6,14 +6,18 @@ import (
 	"github.com/bybzmt/golang-filelog"
 )
 
+const VERSION uint32 = 1
+
 const (
-	TYPE_REQUEST uint8 = 1
-	TYPE_RESPONSE uint8 = 2
+	_ uint8 = iota
+	TYTE_INIT
+	TYPE_REQUEST
+	TYPE_RESPONSE
 )
 
 const (
 	//连接管理
-	LINK_AUTH uint8 = 1
+	LINK_INIT uint8 = 1
 	LINK_CLOSE uint8 = 2
 	LINK_ERROR uint8 = 3
 
@@ -140,3 +144,15 @@ func getLog() flog.Writer {
 	}
 	return Logger
 }
+
+func onPanic(err *error) {
+	if x := recover(); x != nil {
+		switch v := x.(type) {
+		case IO_Error :
+			*err = v
+		default:
+			panic(x)
+		}
+	}
+}
+

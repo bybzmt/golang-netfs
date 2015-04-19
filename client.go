@@ -11,13 +11,22 @@ func Dial(addr string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	c := new(Client)
-	c.init(conn, 4096, 4096)
-	return c, nil
+
+	return new(Client).Init(conn, 4096, 4096)
 }
 
 type Client struct {
 	conn
+}
+
+func (c *Client) Init(conn net.Conn, rBuf, wBuf int) (*Client, error) {
+	c.init(conn, rBuf, wBuf)
+
+	if err := c.LinkInit(); err != nil {
+		return nil, err
+	}
+
+	return c, nil
 }
 
 func (c *Client) Chmod(name string, mode os.FileMode) (err error) {
@@ -193,16 +202,5 @@ func (f *netFile) WriteString(s string) (ret int, err error) {
 	defer onPanic(&err)
 	f.conn.setDeadline(ActionTimeout)
 	return f.f_write([]byte(s))
-}
-
-func onPanic(err *error) {
-	if x := recover(); x != nil {
-		switch v := x.(type) {
-		case IO_Error :
-			*err = v
-		default:
-			panic(x)
-		}
-	}
 }
 

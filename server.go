@@ -66,6 +66,11 @@ type Server struct {
 func (c *Server) Run() {
 	defer c.Close()
 
+	if err := c.LinkInit(); err != nil {
+		getLog().Info("link: " + err.Error())
+		return
+	}
+
 	for {
 		c.setDeadline(IdleTimeout)
 
@@ -150,4 +155,5 @@ func (c *Server) Close() {
 
 	c.conn.Close()
 }
+
 
