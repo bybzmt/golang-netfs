@@ -27,6 +27,14 @@ func (c *Client) Init(conn net.Conn, rBuf, wBuf int) (*Client, error) {
 	return c, nil
 }
 
+func (c *Client) Ping() (err error) {
+	defer onPanic(&err)
+	c.doRequest(LINK_PING)
+	c.flush()
+	c.waitResponse(LINK_PING)
+	return
+}
+
 func (c *Client) Close () (err error) {
 	defer onPanic(&err)
 	c.doRequest(LINK_CLOSE)

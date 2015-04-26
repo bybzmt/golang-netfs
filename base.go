@@ -18,8 +18,7 @@ const (
 	//连接管理
 	LINK_CLOSE uint8 = iota + 1
 
-	//这两个未实现
-	LINK_ERROR
+	//ping
 	LINK_PING
 )
 

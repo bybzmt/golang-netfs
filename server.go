@@ -78,11 +78,13 @@ func (c *Server) Run() {
 		switch code {
 		case LINK_CLOSE :
 			return
+		case LINK_PING :
+			c.doResponse(LINK_PING)
+		default:
+			c.doAction(code)
 		}
 
-		c.setDeadline(ActionTimeout)
-
-		c.doAction(code)
+		c.flush()
 	}
 }
 
@@ -119,8 +121,6 @@ func (c *Server) doAction(code uint8) {
 		default:
 		panic(Data_Error(fmt.Sprintf("Unexpect Target:%d", code)))
 	}
-
-	c.flush()
 }
 
 func (c *Server) addFile(f File) uint32 {
