@@ -3,6 +3,7 @@ package netfs
 import (
 	"time"
 	"os"
+	"log"
 	"github.com/bybzmt/golang-filelog"
 )
 
@@ -144,7 +145,11 @@ var Logger flog.Writer
 
 func getLog() flog.Writer {
 	if Logger == nil {
-		Logger = flog.New(flog.LOG_LOCAL0|flog.LOG_NOTICE, "netfs")
+		var err error
+		Logger, err = flog.New("", "LOCAL0:NOTICE", "netfs")
+		if err != nil {
+			log.Panicln(err)
+		}
 	}
 	return Logger
 }
